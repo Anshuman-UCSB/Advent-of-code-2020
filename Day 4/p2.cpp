@@ -14,6 +14,15 @@ struct passport{
     passport(string inp){
         stringstream ss(inp);
         string temp;
+
+        vector<string> neccesary = {"byr","iyr","eyr","hgt","hcl","ecl","pid"};
+        for(auto& s: neccesary){
+            if(inp.find(s) == string::npos){
+                valid = false;
+                return;
+            }
+        }
+
         try{
             while(ss>>temp){
                 string id = temp.substr(0,3);
@@ -53,6 +62,10 @@ struct passport{
     }
 
     void validate(){
+        if(valid == false){
+            return;
+        }
+
         if(!(1920<=byr && byr<=2002)){
             valid = false;
             return;
@@ -109,7 +122,7 @@ struct passport{
               return;
         }
 
-        if(pid.size()>9){
+        if(pid.size()!=9){
             valid = false;
             return;
         }
