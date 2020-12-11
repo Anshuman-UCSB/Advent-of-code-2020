@@ -23,20 +23,29 @@ int part1(set<int>& plugs){
     vector<int> v(plugs.begin(), plugs.end());
     int regs[] = {0,0,0,0};
     for(int i = 1;i<v.size();i++){
+        cout<<v[i]-v[i-1]<<endl;
         regs[v[i]-v[i-1]]++;
     }
 
     return regs[1]*regs[3];
 }
 
-void part2(set<int>& plugs){
+long long part2(set<int>& plugs){
     vector<int> v(plugs.begin(), plugs.end());
     auto s = split(v);
-    for(auto& t:s){
-        for(auto i:t){
-            cout<<i<<" ";
-        }cout<<endl;
+    // for(auto& t:s){
+    //     for(auto i:t){
+    //         cout<<i<<" ";
+    //     }cout<<endl;
+    // }
+    vector<int> perms = {1,1,2,4,7, 13,24};
+    long long ans = 1;
+    for(auto& tempV:s){
+        cout<<tempV.size()<<" - ";
+        ans*=perms[tempV.size()-1];
+        cout<<ans<<endl;
     }
+    return ans;
 }
 
 int main(){
@@ -50,6 +59,6 @@ int main(){
         plugs.insert(temp);
     }
     plugs.insert(*plugs.rbegin()+3);
-    // cout<<part1(plugs)<<endl;
-    part2(plugs);
+    cout<<part1(plugs)<<endl;
+    cout<<"Part 2: "<<part2(plugs)<<endl;
 }
