@@ -2,8 +2,11 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <unordered_map>
 #include <map>
+#include <chrono>
 using namespace std;
+using namespace std::chrono;
 
 int game(vector<int>& inp, int until);
 
@@ -18,12 +21,19 @@ int main(){
     vector<int> inputNums = {inp};
     while(ss>>trash>>inp)
         inputNums.push_back(inp);
-    cout<<"Part 1: "<<game(inputNums, 2020)<<endl;
-    cout<<"Part 1: "<<game(inputNums, 30000000)<<endl;
+    auto start = high_resolution_clock::now();
+    cout<<"Part 1: "<<game(inputNums, 2020);
+    auto stop = high_resolution_clock::now();
+    cout<<" in "<<(duration_cast<microseconds>(stop-start)).count()<<" microseconds."<<endl;
+    start = high_resolution_clock::now();
+    cout<<"Part 2: "<<game(inputNums, 30000000)<< " in ";
+    stop = high_resolution_clock::now();
+    cout<<(duration_cast<seconds>(stop-start)).count()<<" seconds."<<endl;
 }
 
 
 int game(vector<int>& inp, int until){
+    //unordered_map
     map<int, vector<int>> m;
     // number, most recent turn
     int turn = 1;
@@ -42,8 +52,8 @@ int game(vector<int>& inp, int until){
         while(m[val].size()>2){
             m[val].pop_back();
         }
-        if(rand()%10000==1)
-            cout<<"Turn "<<turn<<": "<<val<<endl;
+        // if(rand()%10000==1)
+        //     cout<<"Turn "<<turn<<": "<<val<<endl;
         last = val;
     }
     // for(auto& p: m){
