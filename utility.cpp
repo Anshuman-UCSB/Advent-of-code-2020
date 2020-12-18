@@ -37,7 +37,7 @@ bool inVect(vector<T>& v, T val){
 }
 
 template <typename T>
-bool findInd(vector<T>& v, T val){
+int findInd(const vector<T>& v, T val){
 	for(int i = 0;i<v.size();i++){
 		if(v[i] == val){
 			return i;
@@ -47,7 +47,7 @@ bool findInd(vector<T>& v, T val){
 }
 
 template <typename T>
-vector<T> subVector(vector<T>& v, int l, int h){// vector from [l, h)
+vector<T> subVector(const vector<T>& v, int l, int h){// vector from [l, h)
 	return vector<T>(v.begin()+l, v.begin()+h);
 }
 

@@ -51,9 +51,32 @@ int add(int a, int b){
     return a+b;
 }
 
-int eval(vector<int>& inp){
+int eval(vector<int> inp){
     if(inVect(inp, -3) || inVect(inp, -4)){
-        cout<<"Has parenth."<<endl; 
+        int l, r;
+        int level = 0;
+        l = findInd(inp, -3);
+        for(int i = l+1;i<inp.size();i++){
+            if(inp[i] == -3){
+                level++;
+            }
+            if(inp[i] == -4){
+                if(level){
+                    level--;
+                }else{
+                    r = i;
+                    break;
+                }
+            }
+        }
+        vector<int> temp = subVector(inp, l+1, r);
+        int insideVal = eval(temp);
+        inp.erase(inp.begin()+l, inp.begin()+1+r);
+        inp.insert(inp.begin()+l, insideVal);
+        // printEq(inp);
+        // cout<<endl;
+        return eval(inp);
+        // cout<<temp<<" = "<<insideVal<<endl;
     }else{ //Base case, no parenthesis.
         queue<int> nums, op;
         for(auto v: inp){
@@ -84,18 +107,15 @@ int eval(vector<int>& inp){
 }
 
 int main(){
-    // vector<int> temp(10);
-    // iota(temp.begin(), temp.end(), 0);
-    // cout<<temp<<endl;
-    // cout<<subVector(temp, 1, 4)<<endl;
-
-    // exit(1);
+    long long ans = 0;
     auto inp = readFile();
     for(auto l: inp){
         auto v = toVect(l);
+        long val = eval(v);
         printEq(v);
-        cout<<" or "<<v<<endl;
-        cout<<endl;
-        cout<<eval(v)<<endl;
+        cout<<" = "<<val<<endl;
+        ans += val;
     }
+    cout<<"Part 1: "<<ans<<endl;
+    //5554483793 too low
 }
