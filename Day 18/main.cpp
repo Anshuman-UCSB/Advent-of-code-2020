@@ -1,8 +1,8 @@
 #include "../utility.cpp"
 
-vector<int> toVect(string inp){
-    map<char, int> mapping = {{'+',-1}, {'*',-2}, {'(',-3}, {')',-4}};
-    vector<int> out;
+vector<long long> toVect(string inp){
+    map<char, long long> mapping = {{'+',-1}, {'*',-2}, {'(',-3}, {')',-4}};
+    vector<long long> out;
     string build="";
     bool building = false;
     for(char c: inp){
@@ -31,8 +31,8 @@ vector<int> toVect(string inp){
     return out;
 }
 
-void printEq(vector<int> inp){
-    for(int c: inp){
+void printEq(vector<long long> inp){
+    for(long long c: inp){
         switch(c){
             case -1: cout<<'+';break;
             case -2: cout<<'*';break;
@@ -43,20 +43,20 @@ void printEq(vector<int> inp){
     }
 }
 
-int mult(int a, int b){
+long long mult(long long a, long long b){
     return a*b;
 }
 
-int add(int a, int b){
+long long add(long long a, long long b){
     return a+b;
 }
 
-int eval(vector<int> inp){
-    if(inVect(inp, -3) || inVect(inp, -4)){
-        int l, r;
-        int level = 0;
-        l = findInd(inp, -3);
-        for(int i = l+1;i<inp.size();i++){
+long long eval(vector<long long> inp){
+    if(inVect<long long>(inp, -3) || inVect<long long>(inp, -4)){
+        long long l, r;
+        long long level = 0;
+        l = findInd<long long>(inp, -3);
+        for(long long i = l+1;i<inp.size();i++){
             if(inp[i] == -3){
                 level++;
             }
@@ -69,8 +69,8 @@ int eval(vector<int> inp){
                 }
             }
         }
-        vector<int> temp = subVector(inp, l+1, r);
-        int insideVal = eval(temp);
+        vector<long long> temp = subVector(inp, l+1, r);
+        long long insideVal = eval(temp);
         inp.erase(inp.begin()+l, inp.begin()+1+r);
         inp.insert(inp.begin()+l, insideVal);
         // printEq(inp);
@@ -78,7 +78,7 @@ int eval(vector<int> inp){
         return eval(inp);
         // cout<<temp<<" = "<<insideVal<<endl;
     }else{ //Base case, no parenthesis.
-        queue<int> nums, op;
+        queue<long long> nums, op;
         for(auto v: inp){
             if(v>=0){
                 nums.push(v);
@@ -86,7 +86,7 @@ int eval(vector<int> inp){
                 op.push(v);
             }
             if(op.size()>=1 && nums.size()>=2){
-                int a, b;
+                long long a, b;
                 b = nums.front();
                 nums.pop();
                 a = nums.front();
