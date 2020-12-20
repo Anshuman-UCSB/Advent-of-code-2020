@@ -1,107 +1,143 @@
 #include "../utility.cpp"
 
 struct Rule{
-    bool solved;
     int id;
     vector<vector<int>> raw;
-    vector<string> solutions;
-    Rule():solved(false){}
+    string rgx;
+    Rule():id(-1), rgx(""){}
     Rule(string inp){
-        solved = false;
+        rgx = "";
         stringstream ss(inp);
-        raw.emplace_back();
+        ss>>id;
         string temp;
-        ss>>id>>temp>>temp;
-        if(temp[0] == '"'){
-            solved = true;
-            solutions.push_back(string(1,temp[1]));
-            return;
-        }
-        raw.back().emplace_back(stoi(temp));
-        while(ss>>temp){
-            if(temp == "|"){
-                raw.emplace_back();
-            }else{
-                raw.back().emplace_back(stoi(temp));
+        ss>>temp>>temp;
+        if(temp[0]=='"'){
+            rgx=string(1, temp[1]);
+        }else{
+            raw.emplace_back();
+            raw.back().push_back(stoi(temp));
+            while(ss>>temp){
+                if(temp[0]=='|'){
+                    raw.emplace_back();
+                }else{
+                    raw.back().push_back(stoi(temp));
+                }
             }
         }
     }
 };
- 
-ostream& operator<<(ostream& os, const Rule& r) 
-{ 
-	os<<"Rule "<<r.id<<":"<<endl;
-    if(r.solved){
-        os<<"solved: ";
-        string delim = "";
-        for(auto soln : r.solutions){
-            cout<<delim<<soln;
-            delim = ", ";
-        }
-    }else
-        os<<"Raw:  "<<r.raw<<endl;
-    return os;
-} 
-
-template<class T>
-vector<T> permute(vector<T>& a, vector<T>& b){
-    vector<T> out;
-    for(auto v: a){
-        for(auto v2: b){
-            out.push_back(v+v2);
-        }
-    }
-    return out;
-}
 
 int main(){
-    map<int, Rule> rules;
+    map<int, Rule> r;
+
     fstream file("input");
     string line;
-    while(getline(file, line)){
-        if(line.back() == '\r')
-            line.pop_back();
-        if(line.size()<=0){
+    while(getline(file,line)){
+        if(line.size() == 1){
             break;
         }
-        stringstream ss(line);
-        int id;
-        ss>>id;
-        rules[id]=Rule(line);
+        if(line.back() == '\r'){
+            line.pop_back();
+        }
+        Rule temp(line);
+        r[temp.id]=temp;
+        cout<<temp.raw<<endl;
+        cout<<temp.rgx<<endl;
     }
-    // cout<<rules;
-    // cout<<endl;
-    cout<<rules<<endl;
-    
-    bool unchanged = false;
-    while(!unchanged){
-        unchanged = true;
-        for(auto& p: rules){
-            if(!p.second.solved){
-                for(auto& ruleSet: p.second.raw){
-                    for(auto rNum: ruleSet){
-                        if(rules[rNum].solved == false){
-                            continue;
+
+    bool done = false;
+    while(!done){
+        done = true;
+        for(auto& p: r){
+            if(p.second.rgx.empty()){
+                for(auto ruleset: p.second.raw){
+                    for(auto val: ruleset){
+                        if(r[val].rgx.empty()){
+                            if(val == 8 && p.first == 8){
+                                // only god
+                            }else if(val == 11 && p.first == 11){
+                                // can judge me
+                            }else
+                                goto invalid;
                         }
                     }
                 }
-                // All subs are solved
-                vector<string> temp = {""};
-                for(auto& ruleSet: p.second.raw){
-                    temp.clear();
-                    temp.push_back("");
-                    for(auto num: ruleSet){
-                        cout<<"Before: "<<temp<<endl;
-                        temp= permute(p.second.solutions, rules[num].solutions);
-                        cout<<"After : "<<temp<<endl;
-                        cout<<p.second.solutions<<endl;
+                cout<<"Building "<<p.first<<endl;
+                //Part 2:
+                vector<string> temp;
+                for(auto ruleset: p.second.raw){
+                    string build = "";
+                    for(auto val: ruleset){
+                        if(r[val].rgx.find("|")!=string::npos){
+                            build+="("+r[val].rgx+")";
+                        }else{
+                            build+=r[val].rgx;
+                        }
                     }
+                    temp.push_back(build);
                 }
-                p.second.solutions.insert(p.second.solutions.begin(),temp.begin(), temp.end());
-                p.second.solved = true;
-                unchanged = false;
+                string delim = "";
+                for(auto& s: temp){
+                    // cout<<p.first<<" > "<<s<<endl;
+                    p.second.rgx+=delim+"("+s+")";
+                    delim="|";
+                }
+                if(p.first == 8){
+                    p.second.rgx = "("+p.second.rgx+")+";
+                }
+                done = false;
             }
+            // for(auto& p: r){
+            //     cout<<p.second.raw<<endl;
+            //     cout<<p.second.rgx<<endl;
+            // }
+            invalid:;
         }
-        cout<<rules<<endl;
     }
+
+    // for(auto& p: r){
+    //     cout<<p.second.raw<<endl;
+    //     cout<<p.second.rgx<<endl;
+    // }
+
+    string p1Regex = "^"+r[0].rgx+"$";
+    // string p1Regex = "^a(((aa|bb)(ab|ba))|((ab|ba)(aa|bb)))b$";
+
+    // cout<<p1Regex<<endl;
+    int p1 = 0;
+    while(getline(file, line)){
+        if(line.back() == '\r')
+            line.pop_back();
+        if(regex_search(line, regex(p1Regex)))//{
+            p1++;
+            // cout<<"M> "<<line;
+        // }else
+            // cout<<" > "<<line;
+        // cout<<endl;
+    }
+    cout<<"P1: "<<p1<<endl;
+
+    // string p2Regex = "";
+    // p2Regex+=r[8].rgx+"+";
+    // p2Regex+="(("+r[42].rgx+r[31].rgx+")";
+    // p2Regex+="|("+r[42].rgx+r[42].rgx+r[31].rgx+r[31].rgx+")";
+    // p2Regex+="|("+r[42].rgx+r[42].rgx+r[42].rgx+r[31].rgx+r[31].rgx+r[31].rgx+")";
+    // p2Regex+="|("+r[42].rgx+r[42].rgx+r[42].rgx+r[42].rgx+r[31].rgx+r[31].rgx+r[31].rgx+r[31].rgx+")";
+    // p2Regex+=")";
+    // cout<<p2Regex<<endl;
+
+    // int p2 = 0;
+    // while(getline(file, line)){
+    //     if(line.back() == '\r')
+    //         line.pop_back();
+    //     if(regex_search(line, regex(p2Regex))){
+    //         p2++;
+    //         cout<<"M> "<<line;
+    //     }else
+    //         cout<<" > "<<line;
+    //     cout<<endl;
+    // }
+    // cout<<"P2: "<<p2<<endl;
 }
+
+//p2: 196, 313 too low
