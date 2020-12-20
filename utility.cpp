@@ -5,6 +5,7 @@
 #include <queue>
 #include <stack>
 #include <string>
+#include <regex>
 #include <numeric>
 #include <sstream>
 #include <set>
