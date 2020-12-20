@@ -51,6 +51,68 @@ long long add(long long a, long long b){
     return a+b;
 }
 
+long long eval2(vector<long long> inp){
+    if(inVect<long long>(inp, -3) || inVect<long long>(inp, -4)){
+        long long l, r;
+        long long level = 0;
+        l = findInd<long long>(inp, -3);
+        for(long long i = l+1;i<inp.size();i++){
+            if(inp[i] == -3){
+                level++;
+            }
+            if(inp[i] == -4){
+                if(level){
+                    level--;
+                }else{
+                    r = i;
+                    break;
+                }
+            }
+        }
+        vector<long long> temp = subVector(inp, l+1, r);
+        long long insideVal = eval2(temp);
+        inp.erase(inp.begin()+l, inp.begin()+1+r);
+        inp.insert(inp.begin()+l, insideVal);
+        // printEq(inp);
+        // cout<<endl;
+        return eval2(inp);
+        // cout<<temp<<" = "<<insideVal<<endl;
+    }else if(inVect<long long>(inp, -1)){
+        int ind = findInd<long long>(inp, -1);
+        int val = add(inp[ind-1], inp[ind+1]);
+        inp.erase(inp.begin()+ind-1, inp.begin()+2+ind);
+        inp.insert(inp.begin()+ind-1, val);
+        return eval2(inp);       
+    }
+    else{ //Base case, no parenthesis.
+        queue<long long> nums, op;
+        for(auto v: inp){
+            if(v>=0){
+                nums.push(v);
+            }else{
+                op.push(v);
+            }
+            if(op.size()>=1 && nums.size()>=2){
+                long long a, b;
+                b = nums.front();
+                nums.pop();
+                a = nums.front();
+                nums.pop();
+                switch(op.front()){
+                    case -1:
+                        nums.push(add(a,b));
+                        break;
+                    case -2:
+                        nums.push(mult(a,b));
+                        break;
+                }
+                op.pop();
+            }
+        }
+        return nums.front();
+    }
+}
+
 long long eval(vector<long long> inp){
     if(inVect<long long>(inp, -3) || inVect<long long>(inp, -4)){
         long long l, r;
@@ -111,7 +173,7 @@ int main(){
     auto inp = readFile();
     for(auto l: inp){
         auto v = toVect(l);
-        long val = eval(v);
+        long val = eval2(v);
         printEq(v);
         cout<<" = "<<val<<endl;
         ans += val;
