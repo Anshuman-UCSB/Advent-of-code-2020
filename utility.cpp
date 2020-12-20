@@ -73,7 +73,7 @@ ostream& operator<<(ostream& os, const map<T, S>& v)
 { 
 	for (auto it : v)  
 		os << it.first << " : " 
-		   << it.second << "\n"; 
+		   << it.second << endl; 
 	  
 	return os; 
 } 
