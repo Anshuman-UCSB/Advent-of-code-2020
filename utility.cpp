@@ -27,6 +27,11 @@ ostream& operator<<(ostream& os, const vector<T>& v)
 	return os; 
 } 
 
+template <class T>
+vector<T> reverseVect(const vector<T>& v){
+    return vector<T>(v.rbegin(), v.rend());
+}
+
 template <typename T>
 bool inVect(vector<T>& v, T val){
 	for(auto c: v){
