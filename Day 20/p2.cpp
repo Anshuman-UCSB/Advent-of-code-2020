@@ -19,8 +19,8 @@ vector<string> flipVector(vector<string> v){
 }
 
 int main(){
-    // auto v = readFile("p2Grid.txt");
-    auto v = readFile("exGrid.txt");
+    auto v = readFile("p2Grid.txt");
+    // auto v = readFile("exGrid.txt");
 
     // for(auto& l: v){
     //     cout<<l<<endl;
@@ -34,17 +34,16 @@ int main(){
     int p2 = 0;
     int temp;
     int monsters = 0;
-    int monsterSize = 18;
+    int monsterSize = 15;
     for(int j = 0;j<2;j++){
         for(int i = 0;i<4;i++){
             int monstersTemp= 0;
             for(int y = 0;y<v.size()-3;y++){
                 for(int x = 0;x<v[y].size()-20;x++){
+                    temp = 0;
                     for(int dy = 0;dy<3;dy++){
                         for(int dx = 0;dx<20;dx++){
-                            if(v[y+dy][x+dx] == '#'){
-                                temp++;
-                            }
+
                             if(monsterFrame[dy][dx] == '#'){
                                 if(v[y+dy][x+dx] != '#'){
                                     goto invalid;
@@ -53,7 +52,6 @@ int main(){
                         }
                     }
                     monstersTemp++;
-                    p2
                     invalid:;
                 }
             }
@@ -62,7 +60,7 @@ int main(){
         }
         v = flipVector(v);
     }
-    p2 -= monsters*-monsterSize;
+    p2 = monsters*-monsterSize;
     for(auto& l: v){
         for(auto c: l){
             p2+=(c=='#');
