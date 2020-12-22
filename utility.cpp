@@ -8,10 +8,25 @@
 #include <regex>
 #include <numeric>
 #include <sstream>
+#include <chrono>
 #include <set>
 #include <utility>
 #include <algorithm>
 using namespace std;
+
+struct Timer{
+    std::chrono::high_resolution_clock::time_point begin, end; 
+
+	Timer():begin(chrono::high_resolution_clock::now()){}
+	void start(){
+		begin = chrono::high_resolution_clock::now();
+	}
+	void stop(){
+		end  = chrono::high_resolution_clock::now();
+		chrono::duration<double> elapsed = end-begin;
+		cout << "Elapsed time: " << elapsed.count() << " s\n";
+	}
+};
 
   // C++ template to print vector container elements 
 template <typename T> 
@@ -59,8 +74,8 @@ vector<T> subVector(const vector<T>& v, int l, int h){// vector from [l, h)
 
 
 
-vector<string> readFile(){
-	fstream file("input");
+vector<string> readFile(string inp){
+	fstream file(inp);
 	string line;
 	vector<string> out;
 	while(getline(file, line)){

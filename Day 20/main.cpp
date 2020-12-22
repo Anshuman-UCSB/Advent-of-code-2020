@@ -153,7 +153,7 @@ pair<int, int> addCoord(pair<int, int>& a, pair<int, int>& b){
 
 void populate(map<pair<int, int>, Tile> &m, vector<Tile>& unplaced, queue<pair<int, int>>& q, set<pair<int, int>>& s, pair<int, int> coord){
     s.insert(coord);
-    cout<<"Populating coord "<<coord.first<<", "<<coord.second<<endl;
+    // cout<<"Populating coord "<<coord.first<<", "<<coord.second<<endl;
     vector<pair<int, int>> dirMod = {c(0,1), c(1,0), c(0,-1), c(-1,0)};
     for(int dir = 0;dir<4;dir++){
         for(auto& t: unplaced){
@@ -168,7 +168,56 @@ void populate(map<pair<int, int>, Tile> &m, vector<Tile>& unplaced, queue<pair<i
     }
 }
 
+vector<string> buildMap(map<pair<int, int>, Tile> &m){
+    int minX, maxX, minY, maxY;
+    minX = minY = 999;
+    maxX = maxY = -999;
+    for(auto& p: m){
+        minX = min(minX, p.first.first);
+        minY = min(minY, p.first.second);
+        maxX = max(maxX, p.first.first);
+        maxY = max(maxY, p.first.second);
+    }
+    
+    vector<vector<Tile>> v;
+    for(int y = minY; y<=maxY;y++){
+        v.emplace_back();
+        for(int x = minX; x<=maxX;x++){
+            v.back().push_back(m[c(x,y)]);
+        }
+    }
+    for(auto& r: v){
+        for(auto& t: r){
+            cout<<abs(t.id)<<" ";
+        }
+        cout<<endl;
+    }
+    vector<string> out;
+    // for(auto& r: v){
+    //     for(auto& t: r){
+    //         t.print();
+    //     }
+    // }
+    for(int y = 0; y<v.size();y++){
+        for(int i = 8;i>=1;i--){
+            out.emplace_back();
+            for(int x = 0;x<v.size();x++){
+                // cout<<"hit"<<endl;
+                // cout<<"("<<x<<", "<<y<<", "<<i<<")"<<endl;
+                string temp = v[y][x].raw[i];
+                temp.erase(temp.begin());
+                temp.pop_back();
+                out.back()+=temp;
+                // cout<<out.back()<<endl;
+            }
+        }
+    }
+
+    return out;
+}
+
 int main(){
+    Timer timer;
     fstream file("input");
     string line;
     vector<string> build;
@@ -199,28 +248,20 @@ int main(){
     // for(auto& t: tiles){
     //     t.print();
     // }
-    const int maxSize = 144;
+    const int maxSize = tiles.size();
     set<pair< int, int>> s;
     s.insert(c(0,0));
     while(m.size() <maxSize){
         populate(m, unplaced, q, s, q.front());
         q.pop();
-        printBoard(m);
     }
+    printBoard(m);
+    timer.stop();
 
-    // cout<<"Edges: "<<checkEdges(tiles[0], tiles[3], 0)<<endl;
-    // vector<pair<int, int>> dirMod = {c(0,1), c(1,0), c(0,-1), c(-1,0)};
-    // for(auto& t: unplaced){
-    //     for(int i = 0;i<4;i++){
-    //         auto temp = checkPermutations(m[c(0, 0)], t, i);
-    //         if(temp.first){
-    //             m[dirMod[i]] = temp.second;
-    //             q.push(dirMod[i]);
-    //         }
-    //     }
-    // }
-
+    //part 2
+    auto v = buildMap(m);
+    for(auto& l: v){
+        cout<<l<<endl;
+    }
     
-    // tiles[3].print();
-    // getRotate(tiles[5]).print();
 }
