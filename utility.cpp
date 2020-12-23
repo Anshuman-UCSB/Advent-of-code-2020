@@ -48,6 +48,17 @@ vector<T> reverseVect(const vector<T>& v){
 }
 
 template <typename T>
+bool removeValue(vector<T>& v, T val){
+	for(int i = 0;i<v.size();i++){
+		if(v[i] == val){
+			v.erase(v.begin()+i);
+			return true;
+		}
+	}
+	return false;
+}
+
+template <typename T>
 bool inVect(vector<T>& v, T val){
 	for(auto c: v){
 		if(c == val){
