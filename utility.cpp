@@ -43,6 +43,14 @@ ostream& operator<<(ostream& os, const vector<T>& v)
 	return os; 
 } 
 
+template <typename T> 
+ostream& operator<<(ostream& os, const pair<T,T>& p) 
+{ 
+	os << "("<<p.first<<", "<<p.second<<")"; 
+	return os; 
+} 
+
+
 template <class T>
 vector<T> reverseVect(const vector<T>& v){
     return vector<T>(v.rbegin(), v.rend());

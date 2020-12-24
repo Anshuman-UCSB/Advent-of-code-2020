@@ -8,10 +8,13 @@ enum baseDirections{
 
 struct Directions{
     vector<int> dirs;
+    string raw;
     pair<double, double> coords;
     // ne, e, se, sw, w, nw
+    
     Directions(string inp){
         coords = make_pair(0.0,0.0);
+        raw = inp;
         dirs=vector<int>(6);
         for(int i = 0;i<inp.size();i++){
             switch(inp[i]){
@@ -56,10 +59,43 @@ struct Directions{
         coords.second = round( coords.second* 1000.0 ) / 1000.0;
     }
 
+    void populateMap(map<pair<double, double>, bool>& m){
+        vector<string> dirString = {"ne", "e", "se", "sw", "w", "nw"};
+        for(auto& s: dirString){
+            Directions neighbor(raw+s);
+            m[neighbor.coords] = m[neighbor.coords];
+        }
+    }
+
     void print(){
         cout<<"("<<coords.first<<", "<<coords.second<<")"<<endl;
     }
 };
+
+double getDist(const pair<double, double>& a,const pair<double, double>& b){
+    double out = 0;
+    out+=pow(b.first-a.first,2);
+    out+=pow(b.second-a.second,2);
+    return sqrt(out);
+}
+
+int getNeighbors(pair<double, double>& c, map<pair<double, double>, bool>& m){
+    const double dist = 1.3;
+    int out = -m[c];
+    for(auto& p: m){
+        if(getDist(p.first, c)<dist){
+            out+=m[p.first];
+        }
+    }
+    return out;
+}
+
+map<pair<double, double>, bool> iterate(map<pair<double, double>, bool>& m){
+    map<pair<double, double>, bool> out;
+    for(auto& p: m){
+        
+    }
+}
 
 int main(){
     vector<string> raw = readFile("input");
