@@ -1,0 +1,8 @@
+byr:(19[2-9]\d|200(0-2))
+hcl:#[a-f0-9]{6}
+iyr:(201\d|2020)
+hgt:((1[5-8]\d|19[0-3])cm|(59|6\d|7[0-6])in)
+eyr:(202\d|2030)
+ecl:(amb|blu|brn|gry|grn|hzl|oth)
+pid:\d{9}\D
+cid:
